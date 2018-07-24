@@ -15,6 +15,16 @@ enum JCCIImageContentMode : Int {
     case center;
 }
 
+public func JCCIImageViewSuggestedRenderer() -> JCCIImageRenderer {
+    if let device = MTLCreateSystemDefaultDevice() {
+        return JCCIImageMetalRenderer(device)
+    }
+    if let glcontext = EAGLContext(api: EAGLRenderingAPI.openGLES2) {
+        return JCCIImageGLKRenderer(glcontext)
+    }
+    return JCCIImageCoreGraphicsRenderer()
+}
+
 fileprivate func JCCIMakeRectWithAspectRatioInsideRect(aspectRatio : CGSize, boundingRect : CGRect) -> CGRect {
     return AVMakeRect(aspectRatio: aspectRatio, insideRect: boundingRect)
 }

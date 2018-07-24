@@ -12,7 +12,7 @@ import GLKit
 
 typealias JCView = UIView
 
-protocol JCCIImageRenderer {
+public protocol JCCIImageRenderer {
     func renderImage(_ image:CIImage?);
     var view : UIView { get }
     var context : CIContext? { get set }
