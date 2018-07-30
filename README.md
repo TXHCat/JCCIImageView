@@ -1,5 +1,5 @@
 # JCCIImageView
-A simple way to display CIImage.
+An image view for rendering CIImage with Metal/OpenGL/CoreGraphic.
 
 ```
 let imageView = JCCIImageView(frame: CGRect(x: 50, y: 50, width: 300, height: 300))
