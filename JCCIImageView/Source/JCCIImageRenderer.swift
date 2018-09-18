@@ -37,21 +37,21 @@ class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
     init(_ device:MTLDevice) {
         super.init()
         self.device = device
-        self._view = MTKView(frame: CGRect.zero, device: device)
-        self._view.clearColor = MTLClearColorMake(0, 0, 0, 0)
-        self._view.backgroundColor = UIColor.clear
+        _view = MTKView(frame: CGRect.zero, device: device)
+        _view.clearColor = MTLClearColorMake(0, 0, 0, 0)
+        _view.backgroundColor = UIColor.clear
         
-        self._view.delegate = self
-        self._view.framebufferOnly = false
-        self._view.enableSetNeedsDisplay = true
+        _view.delegate = self
+        _view.framebufferOnly = false
+        _view.enableSetNeedsDisplay = true
         
-        self.context = CIContext(mtlDevice: device, options: [kCIContextWorkingColorSpace:CGColorSpaceCreateDeviceRGB()])
+        self.context = CIContext(mtlDevice: device, options: [CIContextOption.workingColorSpace:CGColorSpaceCreateDeviceRGB()])
         self.commandQueue = device.makeCommandQueue()
     }
     
     func draw(in view: MTKView) {
         guard let commandBuffer = self.commandQueue?.makeCommandBuffer(),
-            let currentDrawable = self._view.currentDrawable,
+            let currentDrawable = _view.currentDrawable,
             let ciimage = self.image else {
             return
         }
@@ -89,10 +89,10 @@ class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
     
     init(_ GLContext:EAGLContext) {
         super.init()
-        self.context = CIContext(eaglContext: GLContext, options: [kCIContextWorkingColorSpace : CGColorSpaceCreateDeviceRGB()])
-        self._view = GLKView(frame: CGRect.zero, context: GLContext)
-        self._view.delegate = self
-        self._view.contentScaleFactor = UIScreen.main.scale
+        self.context = CIContext(eaglContext: GLContext, options: [CIContextOption.workingColorSpace : CGColorSpaceCreateDeviceRGB()])
+        _view = GLKView(frame: CGRect.zero, context: GLContext)
+        _view.delegate = self
+        _view.contentScaleFactor = UIScreen.main.scale
     }
     
     func glkView(_ view: GLKView, drawIn rect: CGRect) {
@@ -124,8 +124,8 @@ class JCCIImageCoreGraphicsRenderer: NSObject, JCCIImageRenderer {
     
     override init() {
         super.init()
-        self._view = UIImageView(frame: CGRect.zero)
-        self.context = CIContext(options: [kCIContextWorkingColorSpace:CGColorSpaceCreateDeviceRGB()])
+        _view = UIImageView(frame: CGRect.zero)
+        self.context = CIContext(options: [CIContextOption.workingColorSpace:CGColorSpaceCreateDeviceRGB()])
     }
     
     func renderImage(_ image: CIImage?) {
@@ -135,6 +135,6 @@ class JCCIImageCoreGraphicsRenderer: NSObject, JCCIImageRenderer {
         }
         
         let result = UIImage(cgImage: outputImage)
-        self._view.image = result
+        _view.image = result
     }
 }

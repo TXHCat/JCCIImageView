@@ -67,7 +67,6 @@ class JCCIImageView: UIView {
             }
             _image = newValue
             self.setNeedsLayout()
-//            self.renderer?.renderImage(image)
         }
     }
     
@@ -103,14 +102,18 @@ class JCCIImageView: UIView {
         }
         switch self.imageContentMode {
         case .scaleAspectFit:
-            self.renderer?.view.frame = JCCIMakeRectWithAspectRatioInsideRect(aspectRatio: imageSize, boundingRect: self.bounds).integral
+            self.renderer?.view.frame = JCCIMakeRectWithAspectRatioInsideRect(aspectRatio: imageSize,
+                                                                              boundingRect: self.bounds).integral
         case .scaleAspectFill:
-            self.renderer?.view.frame = JCCIMakeRectWithAspectRatioFillRect(aspectRatio: imageSize, boundingRect: self.bounds).integral
+            self.renderer?.view.frame = JCCIMakeRectWithAspectRatioFillRect(aspectRatio: imageSize,
+                                                                            boundingRect: self.bounds).integral
         case .center:
-            let viewSize = CGSize(width:imageSize.width/self.scaleFactor, height:imageSize.height/self.scaleFactor);
-            self.renderer?.view.frame = CGRect(x:((self.bounds.width) - viewSize.width)/2, y:((self.bounds.height) - viewSize.height)/2, width:viewSize.width, height:viewSize.height).integral;
-//        default:
-//            self.renderer?.view.frame = self.bounds.integral
+            let viewSize = CGSize(width:imageSize.width/self.scaleFactor,
+                                  height:imageSize.height/self.scaleFactor);
+            self.renderer?.view.frame = CGRect(x:((self.bounds.width) - viewSize.width)/2,
+                                               y:((self.bounds.height) - viewSize.height)/2,
+                                               width:viewSize.width,
+                                               height:viewSize.height).integral;
         }
         self.updateContent()
     }
@@ -127,15 +130,19 @@ class JCCIImageView: UIView {
         let imageSize = image.extent.size
         switch self.imageContentMode {
         case .scaleAspectFit:
-            let targetRect = JCCIMakeRectWithAspectRatioInsideRect(aspectRatio: imageSize, boundingRect: scaleBounds);
+            let targetRect = JCCIMakeRectWithAspectRatioInsideRect(aspectRatio: imageSize,
+                                                                   boundingRect: scaleBounds);
             let horizontalScale = targetRect.size.width/imageSize.width;
             let verticalScale = targetRect.size.height/imageSize.height;
-            return image.transformed(by: CGAffineTransform(scaleX: horizontalScale, y: verticalScale));
+            return image.transformed(by: CGAffineTransform(scaleX: horizontalScale,
+                                                           y: verticalScale));
         case .scaleAspectFill:
-            let targetRect = JCCIMakeRectWithAspectRatioFillRect(aspectRatio: imageSize, boundingRect: scaleBounds);
+            let targetRect = JCCIMakeRectWithAspectRatioFillRect(aspectRatio: imageSize,
+                                                                 boundingRect: scaleBounds);
             let horizontalScale = targetRect.size.width/imageSize.width;
             let verticalScale = targetRect.size.height/imageSize.height;
-            return image.transformed(by: CGAffineTransform(scaleX: horizontalScale, y: verticalScale));
+            return image.transformed(by: CGAffineTransform(scaleX: horizontalScale,
+                                                           y: verticalScale));
         default:
             return image
         }
