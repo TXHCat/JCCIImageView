@@ -21,29 +21,38 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
-        self.ciImageView = JCCIImageView(frame: CGRect.init(x: 50, y: 50, width: 300, height: 300))
-        self.ciImageView.renderer = JCCIImageViewSuggestedRenderer()
-        self.view.addSubview(self.ciImageView)
+        view.backgroundColor = UIColor.white
+        ciImageView = JCCIImageView(frame: CGRect(x: 50,
+                                                       y: 50,
+                                                       width: 300,
+                                                       height: 300))
+        ciImageView.renderer = JCCIImageViewSuggestedRenderer()
+        view.addSubview(ciImageView)
         
-        self.updateImageView()
+        updateImageView()
     }
     
     private func updateImageView(){
-        self.ciImageView.image = CIImage(color: CIColor(red: CGFloat(self.R/255.0), green: CGFloat(self.G/255.0), blue: CGFloat(self.B/255.0), alpha: 1)).cropped(to: CGRect(x: 0, y: 0, width: 300, height: 300))
+        ciImageView.image = CIImage(color: CIColor(red: CGFloat(R / 255.0),
+                                                   green: CGFloat(G / 255.0),
+                                                   blue: CGFloat(B / 255.0),
+                                                   alpha: 1)).cropped(to: CGRect(x: 0,
+                                                                                 y: 0,
+                                                                                 width: 300,
+                                                                                 height: 300))
     }
     
     @IBAction func rChange(_ sender: Any) {
-        self.R = self.rSlider.value
-        self.updateImageView()
+        R = rSlider.value
+        updateImageView()
     }
     @IBAction func gChange(_ sender: Any) {
-        self.G = self.gSlider.value
-        self.updateImageView()
+        G = gSlider.value
+        updateImageView()
     }
     @IBAction func bChange(_ sender: Any) {
-        self.B = self.bSlider.value
-        self.updateImageView()
+        B = bSlider.value
+        updateImageView()
     }
 
     override func didReceiveMemoryWarning() {

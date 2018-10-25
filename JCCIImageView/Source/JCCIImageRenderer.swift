@@ -10,17 +10,13 @@ import UIKit
 import MetalKit
 import GLKit
 
-typealias JCView = UIView
-
 public protocol JCCIImageRenderer {
-    func renderImage(_ image:CIImage?);
+    func renderImage(_ image:CIImage?)
     var view : UIView { get }
     var context : CIContext? { get set }
 }
 
 class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
-    typealias View = MTKView
-    
     private var _view : MTKView!
     var view: UIView{
         get {
@@ -45,7 +41,8 @@ class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
         _view.framebufferOnly = false
         _view.enableSetNeedsDisplay = true
         
-        self.context = CIContext(mtlDevice: device, options: [CIContextOption.workingColorSpace:CGColorSpaceCreateDeviceRGB()])
+        self.context = CIContext(mtlDevice: device,
+                                 options: [.workingColorSpace : CGColorSpaceCreateDeviceRGB()])
         self.commandQueue = device.makeCommandQueue()
     }
     
@@ -74,8 +71,6 @@ class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
 
 
 class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
-    typealias View = GLKView
-    
     private var _view : GLKView!
     var view : UIView {
         get {
@@ -89,7 +84,8 @@ class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
     
     init(_ GLContext:EAGLContext) {
         super.init()
-        self.context = CIContext(eaglContext: GLContext, options: [CIContextOption.workingColorSpace : CGColorSpaceCreateDeviceRGB()])
+        self.context = CIContext(eaglContext: GLContext,
+                                 options: [.workingColorSpace : CGColorSpaceCreateDeviceRGB()])
         _view = GLKView(frame: CGRect.zero, context: GLContext)
         _view.delegate = self
         _view.contentScaleFactor = UIScreen.main.scale
@@ -101,8 +97,14 @@ class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
         }
         glClearColor(0, 0, 0, 0)
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
-        let size = rect.size.applying(CGAffineTransform(scaleX: self.view.contentScaleFactor, y: self.view.contentScaleFactor))
-        self.context?.draw(ciimage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height), from: ciimage.extent)
+        let size = rect.size.applying(CGAffineTransform(scaleX: self.view.contentScaleFactor,
+                                                        y: self.view.contentScaleFactor))
+        self.context?.draw(ciimage,
+                           in: CGRect(x: 0,
+                                      y: 0,
+                                      width: size.width,
+                                      height: size.height),
+                           from: ciimage.extent)
     }
     
     func renderImage(_ image: CIImage?) {
@@ -125,7 +127,7 @@ class JCCIImageCoreGraphicsRenderer: NSObject, JCCIImageRenderer {
     override init() {
         super.init()
         _view = UIImageView(frame: CGRect.zero)
-        self.context = CIContext(options: [CIContextOption.workingColorSpace:CGColorSpaceCreateDeviceRGB()])
+        self.context = CIContext(options: [.workingColorSpace : CGColorSpaceCreateDeviceRGB()])
     }
     
     func renderImage(_ image: CIImage?) {

@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-enum JCCIImageContentMode : Int {
+enum JCCIImageContentMode {
     case scaleAspectFit;
     case scaleAspectFill;
     case center;
@@ -19,7 +19,7 @@ public func JCCIImageViewSuggestedRenderer() -> JCCIImageRenderer {
     if let device = MTLCreateSystemDefaultDevice() {
         return JCCIImageMetalRenderer(device)
     }
-    if let glcontext = EAGLContext(api: EAGLRenderingAPI.openGLES2) {
+    if let glcontext = EAGLContext(api: .openGLES2) {
         return JCCIImageGLKRenderer(glcontext)
     }
     return JCCIImageCoreGraphicsRenderer()
@@ -48,7 +48,7 @@ class JCCIImageView: UIView {
             guard let re = _renderer else {
                 return
             }
-            self.addSubview(re.view)
+            addSubview(re.view)
             re.view.frame = self.bounds.integral
         }
         get {
@@ -66,25 +66,23 @@ class JCCIImageView: UIView {
                 return
             }
             _image = newValue
-            self.setNeedsLayout()
+            setNeedsLayout()
         }
     }
     
-    public var _imageContentMode = JCCIImageContentMode.scaleAspectFit
+    private var _imageContentMode = JCCIImageContentMode.scaleAspectFit
     public var imageContentMode : JCCIImageContentMode {
         get {
             return _imageContentMode
         }
         set {
             _imageContentMode = newValue
-            self.setNeedsLayout()
+            setNeedsLayout()
         }
     }
     
     private var scaleFactor : CGFloat {
-        get {
-            return UIScreen.main.nativeScale
-        }
+        return UIScreen.main.nativeScale
     }
     
     override init(frame: CGRect) {
@@ -108,8 +106,8 @@ class JCCIImageView: UIView {
             self.renderer?.view.frame = JCCIMakeRectWithAspectRatioFillRect(aspectRatio: imageSize,
                                                                             boundingRect: self.bounds).integral
         case .center:
-            let viewSize = CGSize(width:imageSize.width/self.scaleFactor,
-                                  height:imageSize.height/self.scaleFactor);
+            let viewSize = CGSize(width:imageSize.width / scaleFactor,
+                                  height:imageSize.height / scaleFactor);
             self.renderer?.view.frame = CGRect(x:((self.bounds.width) - viewSize.width)/2,
                                                y:((self.bounds.height) - viewSize.height)/2,
                                                width:viewSize.width,
@@ -119,14 +117,14 @@ class JCCIImageView: UIView {
     }
     
     private func updateContent(){
-        self.renderer?.renderImage(self.scaleImageForDisplay(self.image))
+        renderer?.renderImage(scaleImageForDisplay(self.image))
     }
     
     private func scaleImageForDisplay(_ ciimage : CIImage?) -> CIImage?{
         guard let image = ciimage else {
             return nil
         }
-        let scaleBounds = self.bounds.applying(CGAffineTransform(scaleX: self.scaleFactor, y: self.scaleFactor))
+        let scaleBounds = self.bounds.applying(CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
         let imageSize = image.extent.size
         switch self.imageContentMode {
         case .scaleAspectFit:
