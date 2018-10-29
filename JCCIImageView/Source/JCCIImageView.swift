@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-enum JCCIImageContentMode {
+public enum JCCIImageContentMode {
     case scaleAspectFit;
     case scaleAspectFill;
     case center;
@@ -34,25 +34,26 @@ fileprivate func JCCIMakeRectWithAspectRatioFillRect(aspectRatio:CGSize, boundin
     let verticalRatio = boundingRect.size.height / aspectRatio.height;
     let ratio = max(horizontalRatio, verticalRatio);
     
-    let newSize = CGSize(width:floor(aspectRatio.width * ratio), height:floor(aspectRatio.height * ratio))
-    let rect = CGRect(x:boundingRect.origin.x + (boundingRect.size.width - newSize.width)/2, y:boundingRect.origin.y + (boundingRect.size.height - newSize.height)/2, width:newSize.width, height:newSize.height);
+    let newSize = CGSize(width:floor(aspectRatio.width * ratio),
+                         height:floor(aspectRatio.height * ratio))
+    let rect = CGRect(x:boundingRect.origin.x + (boundingRect.size.width - newSize.width)/2,
+                      y:boundingRect.origin.y + (boundingRect.size.height - newSize.height)/2,
+                      width:newSize.width,
+                      height:newSize.height);
     return rect;
 }
 
-class JCCIImageView: UIView {
-    private var _renderer : JCCIImageRenderer?
+public class JCCIImageView: UIView {
     public var renderer : JCCIImageRenderer?{
-        set {
-            _renderer?.view.removeFromSuperview()
-            _renderer = newValue
-            guard let re = _renderer else {
+        willSet {
+            renderer?.view.removeFromSuperview()
+        }
+        didSet {
+            guard let re = renderer else {
                 return
             }
             addSubview(re.view)
             re.view.frame = self.bounds.integral
-        }
-        get {
-            return _renderer
         }
     }
     
@@ -70,13 +71,8 @@ class JCCIImageView: UIView {
         }
     }
     
-    private var _imageContentMode = JCCIImageContentMode.scaleAspectFit
-    public var imageContentMode : JCCIImageContentMode {
-        get {
-            return _imageContentMode
-        }
-        set {
-            _imageContentMode = newValue
+    public var imageContentMode = JCCIImageContentMode.scaleAspectFit {
+        didSet {
             setNeedsLayout()
         }
     }
@@ -89,7 +85,7 @@ class JCCIImageView: UIView {
         super.init(frame: frame)
     }
     
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         guard let imageSize = self.image?.extent.size else {
             return
@@ -117,7 +113,7 @@ class JCCIImageView: UIView {
     }
     
     private func updateContent(){
-        renderer?.renderImage(scaleImageForDisplay(self.image))
+        renderer?.renderImage(scaleImageForDisplay(image))
     }
     
     private func scaleImageForDisplay(_ ciimage : CIImage?) -> CIImage?{

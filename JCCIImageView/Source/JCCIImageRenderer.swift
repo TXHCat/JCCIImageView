@@ -19,9 +19,7 @@ public protocol JCCIImageRenderer {
 class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
     private var _view : MTKView!
     var view: UIView{
-        get {
-            return _view
-        }
+        return _view
     }
     
     var context: CIContext?
@@ -73,9 +71,7 @@ class JCCIImageMetalRenderer: NSObject, JCCIImageRenderer, MTKViewDelegate{
 class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
     private var _view : GLKView!
     var view : UIView {
-        get {
-            return _view
-        }
+        return _view
     }
     
     var context: CIContext?
@@ -117,9 +113,7 @@ class JCCIImageGLKRenderer: NSObject, JCCIImageRenderer, GLKViewDelegate {
 class JCCIImageCoreGraphicsRenderer: NSObject, JCCIImageRenderer {
     private var _view : UIImageView!
     var view : UIView {
-        get {
-            return _view
-        }
+        return _view
     }
     
     var context: CIContext?
