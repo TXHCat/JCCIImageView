@@ -17,16 +17,18 @@ class ViewController: UIViewController {
     @IBOutlet weak var rSlider: UISlider!
     @IBOutlet weak var gSlider: UISlider!
     @IBOutlet weak var bSlider: UISlider!
-    private var ciImageView:JCCIImageView!
+    private lazy var ciImageView:JCCIImageView = {
+        let view = JCCIImageView(frame: CGRect(x: 50,
+                                               y: 50,
+                                               width: 300,
+                                               height: 300))
+        view.renderer = JCCIImageViewSuggestedRenderer()
+        return view
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-        ciImageView = JCCIImageView(frame: CGRect(x: 50,
-                                                       y: 50,
-                                                       width: 300,
-                                                       height: 300))
-        ciImageView.renderer = JCCIImageViewSuggestedRenderer()
         view.addSubview(ciImageView)
         
         updateImageView()

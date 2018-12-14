@@ -6,7 +6,11 @@
 //  Copyright © 2018 Jake. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 import AVFoundation
 
 public enum JCCIImageContentMode {
@@ -19,9 +23,12 @@ public func JCCIImageViewSuggestedRenderer() -> JCCIImageRenderer {
     if let device = MTLCreateSystemDefaultDevice() {
         return JCCIImageMetalRenderer(device)
     }
+    #if os(macOS)
+    #else
     if let glcontext = EAGLContext(api: .openGLES2) {
         return JCCIImageGLKRenderer(glcontext)
     }
+    #endif
     return JCCIImageCoreGraphicsRenderer()
 }
 
@@ -43,7 +50,7 @@ fileprivate func JCCIMakeRectWithAspectRatioFillRect(aspectRatio:CGSize, boundin
     return rect;
 }
 
-public class JCCIImageView: UIView {
+public class JCCIImageView: View {
     public var renderer : JCCIImageRenderer?{
         willSet {
             renderer?.view.removeFromSuperview()
@@ -67,26 +74,52 @@ public class JCCIImageView: UIView {
                 return
             }
             _image = newValue
+            #if os(macOS)
+            displayIfNeeded()
+            #else
             setNeedsLayout()
+            #endif
         }
     }
     
     public var imageContentMode = JCCIImageContentMode.scaleAspectFit {
         didSet {
+            #if os(macOS)
+            displayIfNeeded()
+            #else
             setNeedsLayout()
+            #endif
         }
     }
     
     private var scaleFactor : CGFloat {
+        #if os(macOS)
+        return NSScreen.main?.backingScaleFactor ?? 1.0
+        #else
         return UIScreen.main.nativeScale
+        #endif
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    #if os(macOS)
+    public override func resizeSubviews(withOldSize oldSize: NSSize) {
+        super.resizeSubviews(withOldSize: oldSize)
+        displayIfNeeded()
     }
     
+    public override func displayIfNeeded() {
+        super.displayIfNeeded()
+        resizeRendererView()
+        updateContent()
+    }
+    #else
     override public func layoutSubviews() {
         super.layoutSubviews()
+        resizeRendererView()
+        updateContent()
+    }
+    #endif
+    
+    private func resizeRendererView() {
         guard let imageSize = self.image?.extent.size else {
             return
         }
@@ -109,7 +142,6 @@ public class JCCIImageView: UIView {
                                                width:viewSize.width,
                                                height:viewSize.height).integral;
         }
-        self.updateContent()
     }
     
     private func updateContent(){
@@ -142,7 +174,4 @@ public class JCCIImageView: UIView {
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
